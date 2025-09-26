@@ -4,16 +4,25 @@ import 'package:provider/provider.dart';
 import 'package:gestion_admin_app/providers/auth_provider.dart';
 import 'package:gestion_admin_app/providers/document_provider.dart';
 import 'package:gestion_admin_app/services/auth_service.dart';
-// REMARQUE : Si vous utilisez Google Fonts, décommentez l'import ci-dessous
-// import 'package:google_fonts/google_fonts.dart'; 
 
-// --- MODÈLE POUR LES SERVICES (MIS À JOUR AVEC COULEUR) ---
+// Importez les 9 pages de services (vérifiez que ces fichiers existent !)
+import 'declaration_naissance_screen.dart';
+import 'extrait_acte_civil_screen.dart';
+import 'copie_integrale_acte_screen.dart';
+import 'transcription_screen.dart';
+import 'droit_recherche_screen.dart';
+import 'duplicata_screen.dart';
+import 'mention_screen.dart';
+import 'declaration_deces_screen.dart';
+import 'declaration_mariage_screen.dart';
+
+// --- MODÈLE POUR LES SERVICES ---
 class ServiceItem {
   final String title;
   final String description;
   final IconData icon;
   final VoidCallback onTap;
-  final Color cardColor; // Nouveau champ pour la couleur
+  final Color cardColor;
 
   ServiceItem({
     required this.title,
@@ -42,70 +51,124 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     
-    // Définition de la liste des services avec des couleurs, icônes et descriptions uniques.
+    // Définition de la liste des services avec la navigation vers les nouvelles pages
     _services = [
       ServiceItem(
         title: 'Déclaration de Naissance',
         description: 'Déclarez la naissance d\'un enfant dans le délai légal.',
         icon: Icons.baby_changing_station,
-        cardColor: const Color(0xFFF44336), // Rouge vif
-        onTap: () { print('Naviguer vers Déclaration de Naissance'); },
+        cardColor: const Color(0xFFF44336), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DeclarationNaissanceScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Extrait Acte Civil',
         description: 'Demandez un extrait simple ou plurilingue de tout acte civil.',
         icon: Icons.fact_check,
-        cardColor: const Color(0xFF4CAF50), // Vert Émeraude
-        onTap: () { print('Naviguer vers Extrait Acte Civil'); },
+        cardColor: const Color(0xFF4CAF50), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ExtraitActeCivilScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Copie Intégrale de l’Acte',
         description: 'Obtenez la reproduction complète d\'un acte de naissance ou autre.',
         icon: Icons.assignment,
-        cardColor: const Color(0xFFFF9800), // Orange Vif
-        onTap: () { print('Naviguer vers Copie Intégrale'); },
+        cardColor: const Color(0xFFFF9800), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CopieIntegraleActeScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Transcription',
         description: 'Formalisez l\'enregistrement d\'un acte civil étranger.',
         icon: Icons.language,
-        cardColor: const Color(0xFF2196F3), // Bleu Ciel
-        onTap: () { print('Naviguer vers Transcription'); },
+        cardColor: const Color(0xFF2196F3), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TranscriptionScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Droit de Recherche',
         description: 'Soumission d\'une demande pour retrouver un document archivé.',
         icon: Icons.search,
-        cardColor: const Color(0xFF9C27B0), // Violet Profond
-        onTap: () { print('Naviguer vers Droit de Recherche'); },
+        cardColor: const Color(0xFF9C27B0), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DroitRechercheScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Duplicata',
         description: 'Obtenez une copie certifiée conforme d\'un acte déjà délivré.',
         icon: Icons.copy,
-        cardColor: const Color(0xFF00BCD4), // Cyan
-        onTap: () { print('Naviguer vers Duplicata'); },
+        cardColor: const Color(0xFF00BCD4), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DuplicataScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Mention',
         description: 'Ajout ou modification d\'une mention marginale sur un acte.',
         icon: Icons.edit_note,
-        cardColor: const Color(0xFFFFC107), // Ambre
-        onTap: () { print('Naviguer vers Mention'); },
+        cardColor: const Color(0xFFFFC107), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MentionScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Déclaration de Décès',
         description: 'Déclarez un décès pour l\'enregistrement officiel et les démarches.',
-        icon: Icons.healing, // ICÔNE CORRIGÉE
-        cardColor: const Color(0xFF607D8B), // Bleu Gris (Sobriété)
-        onTap: () { print('Naviguer vers Déclaration de Décès'); },
+        icon: Icons.healing, 
+        cardColor: const Color(0xFF607D8B), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DeclarationDecesScreen()),
+          );
+        },
       ),
       ServiceItem(
         title: 'Déclaration de Mariage',
         description: 'Informations sur le dépôt de dossier et la célébration du mariage.',
         icon: Icons.favorite,
-        cardColor: const Color(0xFFE91E63), // Rose Vif
-        onTap: () { print('Naviguer vers Déclaration de Mariage'); },
+        cardColor: const Color(0xFFE91E63), 
+        onTap: () { 
+          // LA NAVIGATION CORRECTE EST ICI
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DeclarationMariageScreen()),
+          );
+        },
       ),
     ];
 
@@ -161,9 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       textAlign: TextAlign.center,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      // Utilisez GoogleFonts.alice(...) si vous l'avez configuré
                       style: const TextStyle(
-                        fontFamily: 'Alice', // Tente la police Alice
+                        fontFamily: 'Alice', 
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                         height: 1.1,
@@ -305,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, index) {
                             final document = docProvider.documents[index];
                             return ListTile(
-                              leading: Icon(Icons.article_outlined, color: primaryColor),
+                              leading: const Icon(Icons.article_outlined, color: primaryColor),
                               title: Text(document.title),
                               subtitle: Text(document.content, maxLines: 1, overflow: TextOverflow.ellipsis),
                             );
