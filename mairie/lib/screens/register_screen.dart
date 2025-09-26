@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gestion_admin_app/providers/auth_provider.dart';
 import 'package:gestion_admin_app/services/auth_service.dart';
+import 'package:gestion_admin_app/screens/home_screen.dart'; 
 
 // Définition d'une palette de couleurs inspirée d'une institution
-// (À ajuster si les couleurs officielles sont connues)
-const Color primaryColor = Color(0xFF005691); // Bleu foncé - Suggère la fiabilité, l'autorité
-const Color accentColor = Color(0xFFFFA500); // Orange - Suggère le dynamisme, la chaleur
-const Color backgroundColor = Color(0xFFF4F6F9); // Gris clair pour le fond des champs
+const Color primaryColor = Color(0xFF005691);
+const Color accentColor = Color.fromARGB(255, 255, 242, 0);
+const Color backgroundColor = Color(0xFFF4F6F9);
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -23,10 +23,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  // Utilisez l'instance du service d'authentification ici
   final AuthService _authService = AuthService();
 
-  // Ajout d'un état pour le chargement
   bool _isLoading = false;
 
   @override
@@ -52,21 +50,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final token = await _authService.register(name, email, password);
 
         if (token != null) {
-          // Inscription réussie et utilisateur connecté
-          // L'utilisation de `listen: false` est correcte pour les appels de méthode
+          // 1. Inscription réussie : Mettre à jour le provider d'authentification
           Provider.of<AuthProvider>(context, listen: false).login();
+          
+          // 2. Redirection vers HomeScreen et suppression de l'écran d'inscription de la pile
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+          );
+          // Le `finally` ne s'exécutera pas car la page a été remplacée.
         } else {
-          // Gérer le cas où l'API renvoie null sans erreur (si possible)
+          // Gérer l'échec sans exception
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Échec de l\'inscription. Veuillez réessayer.')),
           );
+          setState(() {
+            _isLoading = false;
+          });
         }
       } catch (e) {
-        // Gérer les erreurs de l'API (e.g., email déjà utilisé, mauvaise connexion)
+        // Gérer les erreurs de l'API (e.g., email déjà utilisé)
         String errorMessage = 'Échec de l\'inscription. Veuillez réessayer.';
-        // Tentative d'extraire un message d'erreur plus précis si 'e' est un type connu
-        // Par exemple, si vous utilisez 'dio' ou une autre librairie avec des erreurs structurées,
-        // vous pourriez faire une vérification plus spécifique ici.
         if (e.toString().contains('Email already in use')) {
           errorMessage = "Cette adresse e-mail est déjà utilisée.";
         }
@@ -74,9 +80,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),
         );
-      } finally {
         setState(() {
-          _isLoading = false; // Masquer l'indicateur de chargement
+          _isLoading = false; // Masquer l'indicateur de chargement en cas d'erreur
         });
       }
     }
@@ -88,9 +93,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Inscription'),
-        backgroundColor: primaryColor, // Utilisation de la couleur principale
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        elevation: 0, // Enlève l'ombre de l'AppBar
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -98,18 +103,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Form(
             key: _formKey,
             child: ListView(
-              // Ajout de contraintes de remplissage pour centrer le contenu sur les grands écrans
               shrinkWrap: true,
               children: [
                 // Logo
                 Image.asset(
-                  'assets/images/logo.jpg', // Chemin vers votre logo
+                  'assets/images/logo.jpg',
                   height: 120,
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 32),
                 
-                // Champ Nom
+                // Champs de formulaire (Nom, E-mail, Mots de passe...)
                 _buildTextFormField(
                   controller: _nameController,
                   labelText: 'Nom Complet',
@@ -122,8 +126,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Champ E-mail
                 _buildTextFormField(
                   controller: _emailController,
                   labelText: 'Adresse e-mail',
@@ -133,7 +135,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Veuillez entrer une adresse e-mail';
                     }
-                    // Simple validation d'e-mail
                     if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
                        return 'Veuillez entrer une adresse e-mail valide';
                     }
@@ -141,8 +142,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Champ Mot de passe
                 _buildTextFormField(
                   controller: _passwordController,
                   labelText: 'Mot de passe',
@@ -156,8 +155,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Champ Confirmer le mot de passe
                 _buildTextFormField(
                   controller: _confirmPasswordController,
                   labelText: 'Confirmer le mot de passe',
@@ -177,10 +174,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // Bouton d'Inscription
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _submitForm, // Désactiver pendant le chargement
+                  onPressed: _isLoading ? null : _submitForm,
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(50),
-                    backgroundColor: primaryColor, // Utilisation de la couleur principale
+                    backgroundColor: primaryColor,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -211,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const Text('Déjà un compte ?'),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop(); // Revenir à l'écran précédent (Connexion)
+                        Navigator.of(context).pop();
                       },
                       child: const Text(
                         'Connectez-vous',
@@ -222,6 +219,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ],
+                ),
+                
+                // NOUVEAU BOUTON : Accès Visiteur (même si la personne n'est pas connectée)
+                TextButton(
+                  onPressed: () {
+                    // Utilise push pour naviguer vers l'écran d'accueil sans supprimer l'écran d'inscription.
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Accès en mode Visiteur',
+                    style: TextStyle(
+                      color: primaryColor.withOpacity(0.7), 
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -265,10 +282,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 241, 244, 54), width: 2),
         ),
         filled: true,
-        fillColor: backgroundColor, // Utilisation de la couleur de fond claire
+        fillColor: backgroundColor,
         contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       ),
       validator: validator,

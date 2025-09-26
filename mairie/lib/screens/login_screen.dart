@@ -7,7 +7,7 @@ import 'package:gestion_admin_app/screens/register_screen.dart';
 // Définition de la palette de couleurs basée sur les indications (Vert, Jaune, Bleu, Café)
 const Color primaryColor = Color(0xFF007A9A); // Un Bleu institutionnel (légèrement tiré sur le vert/cyan pour le contraste)
 const Color accentColor = Color.fromARGB(255, 245, 249, 37); // Un Jaune/Orange vif pour l'accentuation
-const Color secondaryColor = Color(0xFF00894F); // Vert
+const Color secondaryColor = Color.fromARGB(255, 0, 91, 137); // Bleu
 const Color coffeeColor = Color(0xFF795548); // Couleur Café / Marron
 
 // Pour le fond des champs, nous gardons une couleur neutre claire
